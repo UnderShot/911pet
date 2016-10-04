@@ -4,6 +4,84 @@
 
 (function($, window){
 
+
+
+	var Loader = {
+		elem: $("#loader"),
+		_elem: null,
+		isActive: false,
+		show: function () {
+			if( this.isActive ) return false;
+
+			this.elem.children("div.mdl-spinner").addClass("is-active");
+			this.elem.addClass("is-active");
+
+			this.isActive = true;
+		},
+		hide: function () {
+			if( !this.isActive ) return false;
+
+			this.elem.removeClass("is-active");
+			this.elem.children("div.mdl-spinner").removeClass("is-active");
+
+			this.isActive = false;
+		},
+		getCopy: function () {
+			return this.elem.copy();
+		},
+		pasteInto: function (el) {
+			el.append( this.elem );
+		},
+		pasteDefault: function () {
+			this.pasteInto(document.body);
+		}
+	};
+
+
+	var Error = {
+
+		errElement: null,
+
+		hide: function () {
+			if( !this.errElement ) return false;
+
+			//this._errElement.removeClass("mdl-snackbar--active");
+
+			this.errElement.cleanup_();
+		},
+		showErr: function (errData) {
+			var notification = $('#mdl-snackbar');
+
+			this.errElement = notification[0].MaterialSnackbar;
+
+			//console.log(notification[0])
+
+
+			var defCallback = function () {
+				Error.hide();
+			};
+
+			var data = {
+				message: errData.message || "Ошибка",
+				actionHandler: errData.callback || defCallback,
+				actionText: errData.btnLabel || "Ок",
+				timeout: 60 * 60 * 1000
+			};
+
+			this.errElement.showSnackbar(data);
+		},
+		show: function (errData) {
+
+			var self = this;
+			$(window).on("load", function () {
+				self.showErr(errData);
+			});
+
+
+		}
+	};
+
+
 	$.fn.toggleText = function(t1, t2){
 		if(this.text() == t1) this.html(t2);
 		else                  this.html(t1);
@@ -83,8 +161,7 @@
 		var d = $(this).parents("dialog.mdl-dialog");
 		d[0].close();
 
-
-
+		Loader.hide();
 		//d.removeClass("mdl-dialog-close");
 	});
 
@@ -108,24 +185,46 @@
 				 $("#profile-avatar").attr("src", user.profile.photo_50);
 				 $("#side-name").html(user.profile.first_name + " " + user.profile.last_name );*/
 			},
+			lastRendered: 0,
+			maxRenderCount: 20,
+			htmlFriendsList: '',
+			isRendered: false,
 			renderFriends: function(){
 
-				if( typeof user.vkFriends == "undefined" ){
+				if( typeof user.vkFriends == "undefined" || !!this.isRendered ){
 					return false;
 				}
+
+				//console.log(arguments.length);
+				var vkFriendsCount = user.vkFriends.count - 1;
+/*
+				if( (this.lastRendered + this.maxRenderCount) > vkFriendsCount ) this.maxRenderCount = vkFriendsCount;
+				else this.maxRenderCount = this.lastRendered + this.maxRenderCount;*/
+
+				//user.vkFriends.count - 1
 
 				var friends = '',
 					frItems = user.vkFriends.items;
 
-				for(var i = 0, friendsCount = user.vkFriends.count - 1; i < friendsCount; i++ ){
+				for(var i = 0; i < vkFriendsCount; i++ ){
 					if( frItems[i].deactivated ){
 						continue;
 					}
 
-					friends += "<li class='vkFriends-list-item' data-vkId='http://vk.com/id" + frItems[i].id + "'>" + "<img src='" + frItems[i].photo_50 + "' class='vkFriends-list-avatar'>" + "<span class='vkFriends-list-name name'>" + frItems[i].first_name + " " + frItems[i].last_name + "</span></li>";
+					friends += "<li class='vkFriends-list-item" + (i >= this.maxRenderCount ? " hidden" : "") + "' data-vkId='http://vk.com/id" + frItems[i].id + "'>" + "<img src='" + frItems[i].photo_50 + "' class='vkFriends-list-avatar'>" + "<span class='vkFriends-list-name name'>" + frItems[i].first_name + " " + frItems[i].last_name + "</span></li>";
 				}
 
+				//this.lastRendered = this.maxRenderCount;
+
+				this.isRendered = true;
+
 				return friends;
+			},
+			showHiddenFriends: function (min, max) {
+				//console.log(min, max);
+				this.htmlFriendsList.slice( min, max ).removeClass("hidden");
+
+				//console.log(this.htmlFriendsList.slice( min, max ).removeClass("hidden"))
 			},
 			initListJs: function(){
 				var options = {
@@ -153,23 +252,74 @@
 					inviteBtn.attr("disabled", "disabled");
 				}
 			},
-			doInviteFriend: function () {
-				//alert( 123 );
+			getFriendsData: function () {
+				if( window.friends ){
 
-				//console.log(user.toInvite);
+					var friends = window.friends,
+							friendsIds = $.map(friends, function (a) {
+								return a.replace("id","");
+							});
+
+					var req = "https://api.vk.com/method/users.get?user_ids=" + friendsIds.join(",") + "&fields=photo_50&v=5.8";
+
+					$.ajax({
+						url : req,
+						type : "GET",
+						dataType : "jsonp",
+						success: function(msg){
+							var data = msg.response;
+
+							if( !data.length ) return false;
+
+							$("img.table-avatar").each(function () {
+								var s = $(this).data("vkid");
+
+								for( var i = 0, di = data.length; i < di; i++ ){
+									if( data[i].id == s.replace("id","") ){
+										$(this).attr("src", data[i].photo_50);
+									}
+								}
+							});
+						}
+					});
+				}
+			},
+			doInviteFriend: function () {
+				var dialog = $("#newUserDialog");
+
+				var data = user.toInvite.length > 1 ? user.toInvite : user.toInvite[0];
+
+				user.toInvite = [];
+
+				userBehavior.setButtonClass();
+
+				Loader.pasteInto( $("#vkFriendsList") );
+
+				Loader.show();
 
 				$.ajax({
 					url : "/",
 					type : "POST",
 					data: {
-						"new_part": user.toInvite.length > 1 ? user.toInvite : user.toInvite[0]
+						"new_part": data
 					},
 					success: function(msg){
-						//userBehavior.setProfile(msg.response[0])
+						var toFriends;
 
-						$("#newUserDialog")[0].close();
+						if( typeof data == "object" ){
+							toFriends = $.map(data, function (a) {
+								return a.match(/id[\d]+/)[0];
+							});
+						} else toFriends = data.match(/id[\d]+/)[0];
 
-						//location.reload();
+						window.friends = window.friends.concat(toFriends);
+
+						$("#__List").html( $("#__List", msg).html() );
+
+						dialog[0].close();
+
+						Loader.hide();
+						Loader.pasteDefault();
 					}
 				});
 
@@ -177,30 +327,73 @@
 
 		};
 
+		var vkFriendsList = $("#vkFriendsList"),
+			scrollOffset = 300,
+			friendsWrap = $("#vkFriends"),
+			lastMaxScroll = 0;
+
+		vkFriendsList.parent().on( "scroll", function(){
+
+			var offsetScroll = $(this).scrollTop() + $(this).height(),
+				insideBlockHeight = vkFriendsList[0].offsetHeight;
+
+			if(
+				offsetScroll > lastMaxScroll &&
+				offsetScroll >= insideBlockHeight - scrollOffset &&
+				offsetScroll <= insideBlockHeight
+			) {
+				lastMaxScroll = offsetScroll + scrollOffset;
+
+				userBehavior.lastRendered += userBehavior.maxRenderCount;
+
+				userBehavior.showHiddenFriends(userBehavior.lastRendered, userBehavior.lastRendered + userBehavior.maxRenderCount);
+			}
+
+
+		});
+
+		$("body").on("keydown", "#vkFriendsSearch", function () {
+			friendsWrap.children("li").each(function () {
+				if( !$(this).hasClass("hidden") ) return;
+
+				$(this).removeClass("hidden");
+			});
+		});
+
 		// event to open dialog with friends
 		$("#addNewUser").on("click", function () {
-			var friendsWrap = $("#vkFriends");
-
 			user.toInvite = [];
 
-			var rendered = userBehavior.renderFriends();
 
-			if( !rendered ){
-				var callee = arguments.callee;
+
+			if( !userBehavior.isRendered ){
+				var rendered = userBehavior.renderFriends();
+
+				if( !rendered ){
+					var callee = arguments.callee;
+					setTimeout(function () {
+						callee.call();
+					}, 300 );
+
+					return false;
+				}
+				//.html(user.id)
+				friendsWrap.attr("class", "vkFriends list").html( rendered );
+
+				userBehavior.htmlFriendsList = $("#vkFriends li");
+
+
 				setTimeout(function () {
-					callee.call();
-				}, 300 );
+					userBehavior.initListJs();
+				}, 0);
 
-				return false;
+				$("#newUserDialog")[0].showModal();
+			} else{
+				$("#newUserDialog")[0].showModal();
 			}
-			//.html(user.id)
-			friendsWrap.attr("class", "vkFriends list").html( userBehavior.renderFriends() );
 
-			setTimeout(function () {
-				userBehavior.initListJs();
-			}, 0);
 
-			$("#newUserDialog")[0].showModal();
+
 		});
 
 
@@ -265,94 +458,24 @@
 	}
 
 
-	if( window.friends ){
-
-		var friends = window.friends,
-			friendsIds = $.map(friends, function (a) {
-				return a.replace("id","");
-			});
-
-		req = "https://api.vk.com/method/users.get?user_ids=" + friendsIds.join(",") + "&fields=photo_50&v=5.8";
-
-		$.ajax({
-			url : req,
-			type : "GET",
-			dataType : "jsonp",
-			success: function(msg){
-				var data = msg.response;
-
-				if( !data.length ) return false;
-
-				$("img.table-avatar").each(function () {
-
-					var s = $(this).data("vkid");
-
-
-					for( var i = 0, di = data.length; i < di; i++ ){
-						if( data[i].id == s.replace("id","") ){
-							$(this).attr("src", data[i].photo_50);
-						}
-					}
-				});
-
-			}
-		});
-	}
-
-
-	var Error = {
-
-		errElement: null,
-
-		hide: function () {
-			if( !this.errElement ) return false;
-
-			//this._errElement.removeClass("mdl-snackbar--active");
-
-			this.errElement.cleanup_();
-		},
-		showErr: function (errData) {
-			var notification = $('#mdl-snackbar');
-
-			this.errElement = notification[0].MaterialSnackbar;
-
-			console.log(notification[0])
-
-
-			var defCallback = function () {
-				Error.hide();
-			};
-
-			var data = {
-				message: errData.message || "Ошибка",
-				actionHandler: errData.callback || defCallback,
-				actionText: errData.btnLabel || "Ок",
-				timeout: 60 * 60 * 1000
-			};
-
-			this.errElement.showSnackbar(data);
-		},
-		show: function (errData) {
-
-			var self = this;
-			$(window).on("load", function () {
-				self.showErr(errData);
-			});
-
-
-		}
-	};
-
-
-
-
+	userBehavior.getFriendsData();
 
 
 	window.user = user;
 	window.Error = Error;
+	window.Loader = Loader;
 
 }(jQuery, window));
 
+/*
+* Number to Double string
+* 9 -> "09"
+* */
+Number.prototype.toDouble = function () {
+	var n = this;
+
+	return (n < 10 ? "0" : "") + n.toString();
+};
 
 window.countdownTimer = {
 	timers: [],
@@ -394,11 +517,17 @@ window.countdownTimer = {
 		return titles[ (number%100>4 && number%100<20)? 2 : cases[(number%10<5)?number%10:5] ];
 	},
 	renderTemplate: function (data) {
-		return (
-			(data.days + " " + this.declOfNum(data.days, "days")) +" " +
+		/*return (
+			(data.days + "д. " + this.declOfNum(data.days, "days")) +" " +
 			(data.hours + " " + this.declOfNum(data.hours, "hours")) + " " +
 			(data.minutes + " " + this.declOfNum(data.minutes, "minutes")) +" и " +
 			(data.seconds + " " + this.declOfNum(data.seconds, "seconds"))
+		);*/
+		return (
+				(data.days + "д.") + " " +
+				(data.hours.toDouble() + ":") +
+				(data.minutes.toDouble() + ":") +
+				(data.seconds.toDouble())
 		);
 	},
 	renderTimeRemaining: function ( id, data ) {

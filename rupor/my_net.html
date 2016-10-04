@@ -119,7 +119,7 @@
 		</header>
 		<nav class="demo-navigation mdl-navigation mdl-color--sidebar">
 
-			<a class="mdl-navigation__link mdl-navigation__link--active" href="">
+			<a class="mdl-navigation__link" href="">
 				<i class="material-icons mdl-navigation__icon">&#xE7FD;</i>
 				Пользователи
 			</a>
@@ -134,6 +134,10 @@
 				Статистика
 			</a>
 
+			<a class="mdl-navigation__link mdl-navigation__link--active" href="">
+				<i class="material-icons mdl-navigation__icon">&#xE8D3;</i>
+				Моя сеть
+			</a>
 
 			<div class="mdl-layout-spacer"></div>
 		</nav>
@@ -142,99 +146,57 @@
 		<div class="page-content">
 
 
-			<div class="table-wrap table-wrap-users">
-
-				<table id="__List" class="dashboard-table mdl-table-middle">
-					<thead>
-						<tr class="tl_title">
-							<td class="table-col-number">Место</td>
-							<td class="table-col-stat-user">Пользователь</td>
-							<td>Размер рупора</td>
-							<td>Громкость</td>
-							<td>Кол-во людей</td>
-						</tr>
-					</thead>
-					<tr class="table_user-active">
-						<td class="col-text-center">
-
-							<div class="label_theme-place label_theme-place--place-1">
-								<i class="label_theme-place__icon material-icons">&#xE838;</i>
-								<i class="label_theme-place__text">1</i>
-							</div>
+			<div class="wrap__my-net-demo">
 
 
+				<div id="my-net-demo" class="wrap__circles">
 
-						</td>
-						<td class="col-text-left">
-							<img src="" data-vkId="id38079356" alt="" class="table-avatar">
-							<a target="_blank" href="http://vk.com/id38079356" class="table-link-name">Чиликиди Алексей</a>
-						</td>
-						<td class="col-text-center">1</td>
-						<td class="col-text-center">0</td>
-						<td class="col-text-center">4</td>
-					</tr>
-					<tr>
-						<td class="col-text-center">
+					<div class="circle circle__my-net-demo-main">
+						<i class="material-icons">&#xE7FD;</i>
+						<div class="circle__ripple"></div>
+					</div>
 
-							<div class="label_theme-place label_theme-place--place-2">
-								<i class="label_theme-place__icon material-icons">&#xE838;</i>
-								<i class="label_theme-place__text">2</i>
-							</div>
+					<div class="circle circle__my-net-demo-min circle__my-net-demo-min--1">
+						<i class="material-icons">&#xE7FD;</i>
+						<div class="circle__ripple"></div>
+					</div>
 
+					<div class="circle circle__my-net-demo-min circle__my-net-demo-min--2">
+						<i class="material-icons">&#xE7FD;</i>
+						<div class="circle__ripple"></div>
+					</div>
 
+					<div class="circle circle__my-net-demo-min circle__my-net-demo-min--3">
+						<i class="material-icons">&#xE7FD;</i>
+						<div class="circle__ripple"></div>
+					</div>
 
-						</td>
-						<td class="col-text-left">
-							<img src="" data-vkId="id38079356" alt="" class="table-avatar">
-							<a target="_blank" href="http://vk.com/id38079356" class="table-link-name">Чиликиди Алексей</a>
-						</td>
-						<td class="col-text-center">1</td>
-						<td class="col-text-center">0</td>
-						<td class="col-text-center">4</td>
-					</tr>
-					<tr>
-						<td class="col-text-center">
+				</div>
 
-							<div class="label_theme-place label_theme-place--place-3">
-								<i class="label_theme-place__icon material-icons">&#xE838;</i>
-								<i class="label_theme-place__text">3</i>
-							</div>
+				<div class="text__my-net-demo">
+					<div class="mdl-typography--display-1 mdl-typography--font-medium">Моя сеть</div>
+					<p class="text--content-medium">
+						Доступ будет открыт только после достижения 2-о уровня
+					</p>
+					<a href="#" class="mdl-button mdl-js-button button--text-medium">Поднять уровень</a>
+				</div>
 
-
-
-						</td>
-						<td class="col-text-left">
-							<img src="" data-vkId="id38079356" alt="" class="table-avatar">
-							<a target="_blank" href="http://vk.com/id38079356" class="table-link-name">Чиликиди Алексей</a>
-						</td>
-						<td class="col-text-center">1</td>
-						<td class="col-text-center">0</td>
-						<td class="col-text-center">4</td>
-					</tr>
-					<tr>
-						<td class="col-text-center">
-
-							<div class="label_theme-place label_theme-place-noplace">
-								<i class="label_theme-place__text">4</i>
-							</div>
-
-
-
-						</td>
-						<td class="col-text-left">
-							<img src="" data-vkId="id38079356" alt="" class="table-avatar">
-							<a target="_blank" href="http://vk.com/id38079356" class="table-link-name">Чиликиди Алексей</a>
-						</td>
-						<td class="col-text-center">1</td>
-						<td class="col-text-center">0</td>
-						<td class="col-text-center">4</td>
-					</tr>
-				</table>
 
 			</div>
 
+
+
+
 			<script>
-				friends = ['id38079356']
+				friends = ['id38079356'];
+
+				jQuery(window).on("load", function () {
+
+					var circlesWrap = $("#my-net-demo");
+
+					circlesWrap.find("div.circle, div.circle__ripple").addClass("animated")
+
+				});
 			</script>
 
 

@@ -1098,5 +1098,230 @@ dialog[open] {
 }
 .mdl-tooltip{
 	/*margin-top: -93px !important;*/
-
 }
+@keyframes loaderShow {
+	0%{
+		display: none;
+		transform: scale(0);
+	}
+	1%{
+		display: block;
+		transform: scale(0);
+	}
+	100%{
+		display: block;
+		transform: scale(1);
+	}
+}
+.loader--fixed{
+	display: none;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-left: -13px;
+	margin-top: -13px;
+	overflow: hidden;
+	z-index: 9999;
+	background: #fff;
+	height: 26px;
+	width: 26px;
+	text-align: center;
+	-webkit-border-radius: 32px;
+	-moz-border-radius: 32px;
+	border-radius: 32px;
+	padding: 8px;
+}
+.loader--fixed .mdl-spinner{
+	width: 26px;
+	height: 26px;
+	}
+	.loader--fixed.is-active{
+		animation: loaderShow .3s;
+		display: block;
+	}
+#vkFriendsList{
+	position: relative;
+}
+.wrap__my-net-demo{
+	text-align: center;
+}
+
+.text__my-net-demo{
+	text-align: center;
+	padding: 0 35%;
+	}
+	.text__my-net-demo .mdl-typography--display-1{
+		font-size: 32px;
+	}
+.text--content-medium{
+	font-size: 115%;
+	line-height: 110%;
+	color: rgba(0,0,0,.54);
+	margin-top: 10px;
+	margin-bottom: 30px;
+	font-weight: 500;
+}
+.button--text-medium{
+	font-size: 115%;
+	background: #ffc600;
+	}
+	.button--text-medium:hover{
+		background: #ffdd19;
+		}
+
+@keyframes ripple-animate {
+	 0%{
+		 transform: scale(1);
+		 opacity: .5;
+	 }
+	 100%{
+		 transform: scale(2);
+		 opacity: 0;
+	 }
+ }
+@keyframes circle-animate {
+	0%{
+		opacity: 0;
+		transform: scale(.4);
+	}
+	100%{
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+
+.circle{
+	display: inline-block;
+	position: relative;
+	-webkit-border-radius: 100%;
+	-moz-border-radius: 100%;
+	border-radius: 100%;
+	/*opacity: 1;*/
+	opacity: 0;
+	}
+.circle.animated{
+	animation: circle-animate .5s 1 cubic-bezier(1,0,0,.5);
+	opacity: 1;
+	}
+
+.wrap__circles{
+	height: 250px;
+	position: relative;
+	margin-top: 40px;
+}
+
+.circle__my-net-demo-main{
+	background: #ffc513;
+	color: rgba(0,0,0,.87);
+	width: 97px;
+	height: 97px;
+	line-height: 90px;
+	z-index: 2;
+	position: relative;
+	}
+.circle__my-net-demo-min{
+	background: #13a5ff;
+	color: rgba(255,255,255,.87);
+	left: 50%;
+	top: 0;
+	margin-left: -31px;
+	width: 63px;
+	height: 63px;
+	line-height: 56px;
+	position: absolute;
+	transform: translate(0,0);
+	opacity: 0;
+	z-index: 1;
+	}
+	.circle__ripple{
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		background: inherit;
+		border-radius: 100%;
+		top: 0;
+		left: 0;
+		opacity: .4;
+		z-index: -1;
+		}
+		.circle__ripple.animated{
+			animation: ripple-animate .8s 1 cubic-bezier(1,0,0,.5);
+			animation-delay: .5s
+			}
+			.circle__my-net-demo-min .circle__ripple.animated{
+				 animation: ripple-animate .8s 1 cubic-bezier(1,0,0,.5);
+				 animation-delay: 1.5s
+				 }
+
+
+	.circle .material-icons{
+		vertical-align: middle;
+		}
+	.circle__my-net-demo-main .material-icons{
+		font-size: 72px;
+		}
+	.circle__my-net-demo-min .material-icons{
+		font-size: 47px;
+		}
+
+
+	@keyframes circle-1--animate {
+		0%{
+			opacity: 0;
+			transform: scale(.4) translate(0,0);
+		}
+		40%{
+			opacity: 0;
+			transform: scale(.4) translate(0,0);
+		}
+		100%{
+			opacity: 1;
+			transform: scale(1) translate(-95px,97px);
+		}
+	}
+	@keyframes circle-2--animate {
+		0%{
+			opacity: 0;
+			transform: scale(.4) translate(0,0);
+		}
+		60%{
+			opacity: 0;
+			transform: scale(.4) translate(0,0);
+		}
+		100%{
+			opacity: 1;
+			transform: scale(1) translate(0,145px);
+		}
+	}
+	@keyframes circle-3--animate {
+		0%{
+			opacity: 0;
+			transform: scale(.4) translate(0,0);
+		}
+		80%{
+			opacity: 0;
+			transform: scale(.4) translate(0,0);
+		}
+		100%{
+			opacity: 1;
+			transform: scale(1) translate(95px,97px);
+		}
+	}
+
+	.circle__my-net-demo-min--1.animated{
+		animation: circle-1--animate 1.4s 1 cubic-bezier(1,0,0,.5);
+		transform: scale(1) translate(-95px,97px);
+		opacity: 1;
+		/*animation-delay: .3s;*/
+	}
+	.circle__my-net-demo-min--2.animated{
+		animation: circle-2--animate 1.4s 1 cubic-bezier(1,0,0,.5);
+		transform: scale(1) translate(0,145px);
+		/*animation-delay: .3s;*/
+	}
+	.circle__my-net-demo-min--3.animated{
+		animation: circle-3--animate 1.4s 1 cubic-bezier(1,0,0,.5);
+		transform: scale(1) translate(95px,97px);
+		/*animation-delay: .3s;*/
+	}
