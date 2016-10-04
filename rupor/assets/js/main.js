@@ -216,7 +216,7 @@
 
 				//this.lastRendered = this.maxRenderCount;
 
-				this.isRendered = true;
+				this.isRendered = false;
 
 				return friends;
 			},
@@ -265,6 +265,7 @@
 					$.ajax({
 						url : req,
 						type : "GET",
+						async: true,
 						dataType : "jsonp",
 						success: function(msg){
 							var data = msg.response;
@@ -389,6 +390,8 @@
 
 				$("#newUserDialog")[0].showModal();
 			} else{
+				//userBehavior.renderedFriendsDefaults();
+
 				$("#newUserDialog")[0].showModal();
 			}
 
@@ -405,6 +408,7 @@
 		$.ajax({
 			url : req,
 			type : "GET",
+			async: true,
 			dataType : "jsonp",
 			success: function(msg){
 				userBehavior.setProfile(msg.response[0])
@@ -418,6 +422,7 @@
 		$.ajax({
 			url : req,
 			type : "GET",
+			async: true,
 			dataType : "jsonp",
 			success: function(msg){
 				userBehavior.setFriends(msg.response)
