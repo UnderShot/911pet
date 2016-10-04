@@ -33,7 +33,7 @@
 			el.append( this.elem );
 		},
 		pasteDefault: function () {
-			this.pasteInto(document.body);
+			this.pasteInto($(document.body));
 		}
 	};
 
