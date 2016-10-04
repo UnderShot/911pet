@@ -1,0 +1,255 @@
+<!doctype html>
+<!--
+  Material Design Lite
+  Copyright 2015 Google Inc. All rights reserved.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+      https://www.apache.org/licenses/LICENSE-2.0
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License
+-->
+<html lang="ru">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<meta name="description" content="">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+
+	<title>Панель - Рупор</title>
+
+	<!-- Add to homescreen for Chrome on Android -->
+	<meta name="mobile-web-app-capable" content="yes">
+	<link rel="icon" sizes="192x192" href="images/android-desktop.png">
+
+	<!-- Add to homescreen for Safari on iOS -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-title" content="Material Design Lite">
+	<link rel="apple-touch-icon-precomposed" href="images/ios-desktop.png">
+
+	<!-- Tile icon for Win8 (144x144 + tile color) -->
+	<meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+	<meta name="msapplication-TileColor" content="#3372DF">
+
+	<link rel="shortcut icon" href="images/favicon.png">
+
+	<!-- SEO: If your mobile URL is different from the desktop URL, add a canonical link to the desktop page https://developers.google.com/webmasters/smartphone-sites/feature-phones -->
+	<!--
+	<link rel="canonical" href="http://www.example.com/">
+	-->
+
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,500,500,700">
+
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<link rel="stylesheet" href="assets/css/dialog-polyfill.css">
+	<link rel="stylesheet" href="assets/css/material.min.css">
+	<link rel="stylesheet" href="assets/css/main.css">
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+	<script src="assets/js/dialogPolyfill.js"></script>
+	<script src="assets/js/list.min.js"></script>
+
+	<style>
+		#view-source {
+			position: fixed;
+			display: block;
+			right: 0;
+			bottom: 0;
+			margin-right: 40px;
+			margin-bottom: 40px;
+			z-index: 900;
+		}
+	</style>
+</head>
+<body>
+<div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header">
+	<header class="demo-header mdl-layout__header mdl-color--primary mdl-color-text--primary-contrast">
+		<div class="mdl-layout__header-row">
+
+			<!-- Page Title -->
+			<span class="mdl-layout-title">Пользователи</span>
+
+			<div class="mdl-layout-spacer"></div>
+			<button class="mdl-button mdl-js-button mdl-color-text--primary-contrast" id="addNewUser">
+				<i class="material-icons">&#xE7FE;</i>
+				<span class="desktop-only">Пригласить</span>
+			</button>
+		</div>
+	</header>
+	<div class="demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+		<header class="demo-drawer-header">
+
+			<a href="#" class="logo-text-min"></a>
+			
+
+			<div class="demo-avatar-dropdown">
+				<div class="demo-avatar-wrap">
+					<div class="demo-avatar">
+						<i class="filledAvatar"></i>
+						<img src="" id="profile-avatar" class="profile-avatar">
+					</div>
+					<button id="btn-logout" class="mdl-button btn-logout mdl-js-button mdl-button--icon">
+						<i class="material-icons">&#xE879;</i>
+					</button>
+					<div class="mdl-tooltip mdl-tooltip--left" data-mdl-for="btn-logout">
+						Выход
+					</div>
+				</div>
+
+
+
+				<div class="dashboard-sidebar-name">
+					<a class="side-name" id="side-name" href="#vk_id" target="_blank"><i class="filledName"></i></a>
+				</div>
+				<div class="dashboard-sidebar-rangs">
+					<span class="rang" title="Уровень"> Lvl <i>1</i> </span>
+					<span class="rang" title="Опыт"> Exp <i>256</i> </span>
+					<span class="rang" title="Ранг"> Rang <i>2</i> </span>
+				</div>
+
+
+
+				<div class="mdl-layout-spacer"></div>
+
+			</div>
+		</header>
+		<nav class="demo-navigation mdl-navigation mdl-color--sidebar">
+
+			<a class="mdl-navigation__link mdl-navigation__link--active" href="">
+				<i class="material-icons mdl-navigation__icon">&#xE7FD;</i>
+				Пользователи
+			</a>
+
+			<a class="mdl-navigation__link sidebar-has-msg" href="">
+				<i class="material-icons mdl-navigation__icon">&#xE838;</i>
+				Задачи
+			</a>
+
+			<a class="mdl-navigation__link" href="">
+				<i class="material-icons mdl-navigation__icon">&#xE922;</i>
+				Статистика
+			</a>
+
+
+			<div class="mdl-layout-spacer"></div>
+		</nav>
+	</div>
+	<main class="mdl-layout__content mdl-color--grey-100">
+		<div class="page-content">
+
+			<div class="table-wrap table-wrap-users">
+				<table id="__List" class="dashboard-table mdl-table-middle">
+					<thead>
+						<tr class="tl_title">
+							<td class="table-col-user">Пользователь</td>
+							<td>В системе</td>
+							<td>Осталось задач</td>
+							<td>Сила связи</td>
+							<td>Кол-во людей</td>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="col-text-left">
+								<img src="" data-vkId="id276704097" alt="" class="table-avatar">
+								<a target="_blank" href="http://vk.com/id276704097" class="table-link-name">Мануковская Кристина</a>
+								<a href="#" class="table-link-del"><i>&times;</i>удалить</a>
+							</td>
+							<td class="is-joined col-text-center">
+								<i class="table-icon table-icon--yes"></i>
+							</td>
+							<td class="col-text-center">2</td>
+							<td class="col-text-center">
+								<span class="relations" title="">
+									<i class="percent">50%</i>
+									<i class="scale" style="width: 50%"></i>
+								</span>
+							</td>
+							<td class="col-text-center">0</td>
+						</tr>
+					</tbody>
+
+				</table>
+
+				<script>
+					friends = ['id276704097']
+				</script>
+
+
+			</div>
+
+		</div>
+
+	</main>
+</div>
+
+<dialog id="newUserDialog" class="mdl-dialog">
+	<div class="mdl-dialog__title mdl-color--primary mdl-color-text--primary-contrast">Пригласить друзей</div>
+	<div class="mdl-dialog__content mdl-dialog__content--nopadding">
+
+		<div id="vkFriendsList">
+
+			<div class="mdl-dialog__content--padding-inside">
+				<div class="mdl-textfield mdl-js-textfield">
+					<input class="mdl-textfield__input search" type="text" id="vkFriendsSearch">
+					<label class="mdl-textfield__label" for="vkFriendsSearch">
+						<i class="material-icons mdl-navigation__icon">&#xE8B6;</i>
+						Введите имя
+					</label>
+				</div>
+			</div>
+
+
+			<ul id="vkFriends" class="vkFriends list">
+				<!-- friends here -->
+			</ul>
+
+		</div>
+
+	</div>
+	<div class="mdl-dialog__actions">
+		<button type="button" id="btnInviteFriends" class="mdl-button mdl-color--primary mdl-color-text--primary-contrast" disabled>Пригласить</button>
+		<button type="button" class="mdl-button dialog-close">Отмена</button>
+	</div>
+</dialog>
+
+
+<!-- Шаблон ошибок - вставить во все шаблоны -->
+<div aria-live="assertive" aria-atomic="true" id="mdl-snackbar" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
+	<div class="mdl-snackbar__text"></div>
+	<button type="button" class="mdl-snackbar__action"></button>
+</div>
+
+<!-- Loader -->
+<div id="loader" class="loader--fixed mdl-shadow--2dp">
+	<div class="mdl-spinner mdl-spinner--single-color mdl-js-spinner"></div>
+</div>
+
+<script>
+window.user = {
+	id: 17,
+	vkId: 22500726
+};
+</script>
+
+
+
+<script src="assets/js/material.min.js"></script>
+<script src="assets/js/main.js"></script>
+
+<script>
+	/*Error.show({
+		message: "asd"
+	});*/
+</script>
+
+</body>
+</html>
