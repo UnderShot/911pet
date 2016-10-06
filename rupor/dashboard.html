@@ -50,6 +50,7 @@
 
 	<link rel="stylesheet" href="assets/css/dialog-polyfill.css">
 	<link rel="stylesheet" href="assets/css/material.min.css">
+	<link rel="stylesheet" href="assets/css/introjs.min.css">
 	<link rel="stylesheet" href="assets/css/main.css">
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -123,19 +124,24 @@
 		</header>
 		<nav class="demo-navigation mdl-navigation mdl-color--sidebar">
 
-			<a class="mdl-navigation__link mdl-navigation__link--active" href="">
+			<a class="mdl-navigation__link mdl-navigation__link--active" href="" id="nav-link__users">
 				<i class="material-icons mdl-navigation__icon">&#xE7FD;</i>
 				Пользователи
 			</a>
 
-			<a class="mdl-navigation__link sidebar-has-msg" href="">
+			<a class="mdl-navigation__link sidebar-has-msg" href="" id="nav-link__tasks">
 				<i class="material-icons mdl-navigation__icon">&#xE838;</i>
 				Задачи
 			</a>
 
-			<a class="mdl-navigation__link" href="">
+			<a class="mdl-navigation__link" href="" id="nav-link__stat">
 				<i class="material-icons mdl-navigation__icon">&#xE922;</i>
 				Статистика
+			</a>
+
+			<a class="mdl-navigation__link" href="" id="nav-link__my-net">
+				<i class="material-icons mdl-navigation__icon">&#xE8D3;</i>
+				Моя сеть
 			</a>
 
 
@@ -161,6 +167,13 @@
 							<td class="col-text-left">
 								<img src="" data-vkId="id276704097" alt="" class="table-avatar">
 								<a target="_blank" href="http://vk.com/id276704097" class="table-link-name">Мануковская Кристина</a>
+
+								<!--
+								Здесь собственно сам таймер,
+								его можно скрывать, если не нужен,
+								но и тогда надо его удалть из массива
+								 -->
+								<span id="countdown__1" class="user-countdown">...</span>
 								<a href="#" class="table-link-del"><i>&times;</i>удалить</a>
 							</td>
 							<td class="is-joined col-text-center">
@@ -238,17 +251,38 @@ window.user = {
 	id: 17,
 	vkId: 22500726
 };
+
+
+
 </script>
 
 
 
 <script src="assets/js/material.min.js"></script>
+<script src="assets/js/intro.min.js"></script>
 <script src="assets/js/main.js"></script>
 
 <script>
-	/*Error.show({
-		message: "asd"
-	});*/
+
+	/*
+	 * Конкретный ID у конкретного
+	 * таймера в таблице
+	 */
+
+	var CT = window.countdownTimer;
+	CT.timers = [
+		{
+			// id of the task
+			id: 1,
+			// end in sec
+			endDate: 1479927000,
+
+			// custom template
+			tpl: "Осталось: {hours}:{minutes}:{seconds}"
+		}
+	];
+
+	CT.init();
 </script>
 
 </body>

@@ -5,7 +5,6 @@
 (function($, window){
 
 
-
 	var Loader = {
 		elem: $("#loader"),
 		_elem: null,
@@ -42,44 +41,70 @@
 
 		errElement: null,
 
+		init: function () {
+			var mdlSnackbar = $('#mdl-snackbar');
+
+			if( mdlSnackbar.length ) this.errElement = mdlSnackbar[0].MaterialSnackbar;
+			this.runQueued();
+		},
+		runQueued: function () {
+			var e = this.errQueued.length;
+			if( !e ) return false;
+
+			for( var i=0; i<e; i++ ){
+				this.errQueued[i].call();
+			}
+		},
 		hide: function () {
 			if( !this.errElement ) return false;
-
-			//this._errElement.removeClass("mdl-snackbar--active");
 
 			this.errElement.cleanup_();
 		},
 		showErr: function (errData) {
-			var notification = $('#mdl-snackbar');
 
-			this.errElement = notification[0].MaterialSnackbar;
+			var self = this,
+				defCallback = function () {
+					Error.hide();
+				},
+				f = function(){
+					var data = {
+						message: errData.message || "Ошибка",
+						actionHandler: errData.callback || defCallback,
+						actionText: errData.btnLabel || "Ок",
+						timeout: 60 * 60 * 1000
+					};
 
-			//console.log(notification[0])
+					self.errElement.showSnackbar(data);
 
+					return data;
+				};
 
-			var defCallback = function () {
-				Error.hide();
-			};
-
-			var data = {
-				message: errData.message || "Ошибка",
-				actionHandler: errData.callback || defCallback,
-				actionText: errData.btnLabel || "Ок",
-				timeout: 60 * 60 * 1000
-			};
-
-			this.errElement.showSnackbar(data);
+			return !self.errElement ? self.errQueued.push(f) : f.call();
 		},
 		show: function (errData) {
-
 			var self = this;
-			$(window).on("load", function () {
-				self.showErr(errData);
-			});
 
-
-		}
+			return this.showErr(errData);
+		},
+		errQueued: []
 	};
+
+
+	$(window).on("load", function () {
+		Error.init();
+	});
+
+
+
+	/* Ajax Serrings */
+	$(document).ajaxError(function() {
+		Error.show({
+			message: "Неизвестная ошибка"
+		})
+	});
+
+
+
 
 
 	$.fn.toggleText = function(t1, t2){
@@ -141,10 +166,6 @@
 
 			});
 
-			//trObj.push();
-
-			//console.log(topTr)
-
 		});
 
 	}
@@ -177,6 +198,9 @@
 				$("#side-name").html(user.profile.first_name + " " + user.profile.last_name );
 			},
 			setFriends: function( data ){
+				data.items = $.grep(data.items, function(i){
+					return !i.deactivated;
+				});
 
 				user.vkFriends = data;
 
@@ -195,8 +219,7 @@
 					return false;
 				}
 
-				//console.log(arguments.length);
-				var vkFriendsCount = user.vkFriends.count - 1;
+				var vkFriendsCount = user.vkFriends.items.length;
 /*
 				if( (this.lastRendered + this.maxRenderCount) > vkFriendsCount ) this.maxRenderCount = vkFriendsCount;
 				else this.maxRenderCount = this.lastRendered + this.maxRenderCount;*/
@@ -207,24 +230,17 @@
 					frItems = user.vkFriends.items;
 
 				for(var i = 0; i < vkFriendsCount; i++ ){
-					if( frItems[i].deactivated ){
-						continue;
-					}
-
 					friends += "<li class='vkFriends-list-item" + (i >= this.maxRenderCount ? " hidden" : "") + "' data-vkId='http://vk.com/id" + frItems[i].id + "'>" + "<img src='" + frItems[i].photo_50 + "' class='vkFriends-list-avatar'>" + "<span class='vkFriends-list-name name'>" + frItems[i].first_name + " " + frItems[i].last_name + "</span></li>";
 				}
 
 				//this.lastRendered = this.maxRenderCount;
 
-				this.isRendered = false;
+				//this.isRendered = false;
 
 				return friends;
 			},
 			showHiddenFriends: function (min, max) {
-				//console.log(min, max);
 				this.htmlFriendsList.slice( min, max ).removeClass("hidden");
-
-				//console.log(this.htmlFriendsList.slice( min, max ).removeClass("hidden"))
 			},
 			initListJs: function(){
 				var options = {
@@ -235,8 +251,6 @@
 
 				if( !this.sortList ) this.sortList = new List('vkFriendsList', options);
 				else this.sortList.reIndex();
-
-				$("#btnInviteFriends").on("click", this.doInviteFriend);
 			},
 			maxInviteForOne: 1,
 			canCheckUser: true,
@@ -290,13 +304,21 @@
 
 				var data = user.toInvite.length > 1 ? user.toInvite : user.toInvite[0];
 
-				user.toInvite = [];
-
 				userBehavior.setButtonClass();
 
 				Loader.pasteInto( $("#vkFriendsList") );
 
 				Loader.show();
+
+				$.map( user.vkFriends.items, function (i, c) {
+					if( typeof i != "object" ){
+						return;
+					}
+
+					if( data.indexOf("http://vk.com/id" + i.id) != -1 ){
+						user.vkFriends.items.splice(c, c + 1);
+					}
+				});
 
 				$.ajax({
 					url : "/",
@@ -305,25 +327,43 @@
 						"new_part": data
 					},
 					success: function(msg){
-						var toFriends;
+						var toFriends,
+							$msg = $(msg),
+							e = $msg.filter("#error");
 
-						if( typeof data == "object" ){
-							toFriends = $.map(data, function (a) {
-								return a.match(/id[\d]+/)[0];
+						if( e.length ) {
+							//#vkFriends
+
+							Error.show({
+								message: e.html()
 							});
-						} else toFriends = data.match(/id[\d]+/)[0];
+						} else{
+							if( typeof data == "object" ){
+								toFriends = $.map(data, function (a) {
+									return a.match(/id[\d]+/)[0];
+								});
+							} else toFriends = data.match(/id[\d]+/)[0];
 
-						window.friends = window.friends.concat(toFriends);
+							window.friends = window.friends.concat(toFriends);
 
-						$("#__List").html( $("#__List", msg).html() );
+							$("#__List").html( $msg.filter("#__List").html() );
 
+							userBehavior.getFriendsData();
+						}
+
+
+						dialog[0].close();
+
+						Loader.hide();
+						Loader.pasteDefault();
+					},
+					error: function() {
 						dialog[0].close();
 
 						Loader.hide();
 						Loader.pasteDefault();
 					}
 				});
-
 			}
 
 		};
@@ -334,7 +374,6 @@
 			lastMaxScroll = 0;
 
 		vkFriendsList.parent().on( "scroll", function(){
-
 			var offsetScroll = $(this).scrollTop() + $(this).height(),
 				insideBlockHeight = vkFriendsList[0].offsetHeight;
 
@@ -349,8 +388,6 @@
 
 				userBehavior.showHiddenFriends(userBehavior.lastRendered, userBehavior.lastRendered + userBehavior.maxRenderCount);
 			}
-
-
 		});
 
 		$("body").on("keydown", "#vkFriendsSearch", function () {
@@ -359,13 +396,13 @@
 
 				$(this).removeClass("hidden");
 			});
-		});
+		}).on("click", "#btnInviteFriends", userBehavior.doInviteFriend);
 
 		// event to open dialog with friends
 		$("#addNewUser").on("click", function () {
 			user.toInvite = [];
 
-
+			$("#vkFriendsSearch").val("");
 
 			if( !userBehavior.isRendered ){
 				var rendered = userBehavior.renderFriends();
@@ -412,6 +449,9 @@
 			dataType : "jsonp",
 			success: function(msg){
 				userBehavior.setProfile(msg.response[0])
+			},
+			error: function () {
+				Error.show()
 			}
 		});
 
@@ -434,7 +474,6 @@
 		$("body").on("click", "li.vkFriends-list-item", function(){
 			var id = $(this).data("vkid"),
 			    vkFriendsWrap = $("#vkFriends");
-
 
 			if( userBehavior.canCheckUser || (user.toInvite.length ? user.toInvite.indexOf(id) != -1 : true) ) {
 				if( !$(this).hasClass("active") ){
@@ -466,6 +505,56 @@
 	userBehavior.getFriendsData();
 
 
+	var intro = introJs();
+
+	intro.setOptions({
+		showStepNumbers: false,
+		showBullets: false,
+		nextLabel: "Далее",
+		prevLabel: "Назад",
+		skipLabel: "Пропустить",
+		doneLabel: "Готово",
+		hidePrev: true,
+		steps: [
+			{
+				intro: "Вас приветствует система коллективного оповещения «Рупор» - альтернатива классическим средствам массовой информации, построенная по принципу «сарафанного радио»"
+			},
+			{
+				element: $("#nav-link__users")[0],
+				intro: "Управляйте вашей подсетью пользователей",
+				position: 'right'
+			},
+			{
+				element: $("#nav-link__tasks")[0],
+				intro: "Выполняя задачи Вы увеличивайте свои возможности в системе и помогаете другим людям узнать важную информацию",
+				position: 'right'
+			},
+			{
+				element: $("#nav-link__stat")[0],
+				intro: "Познакомьтесь с другими пользователями системы и узнайте насколько громче Вас они могут крикнуть",
+				position: 'right'
+			},
+			{
+				element: $("#nav-link__my-net")[0],
+				intro: "Визуализация Вашей подсети пользователей",
+				position: 'right'
+			}
+		]
+	});
+
+	//$("table.dashboard-table").fixMe();
+
+	var exitIntro = function () {
+		if( !!localStorage.getItem("checkIntro") ) return false;
+
+		localStorage.setItem("checkIntro", 1);
+	};
+
+	intro.onexit(exitIntro).oncomplete(exitIntro);
+
+	if( !localStorage.getItem("checkIntro") ) intro.start();
+
+
 	window.user = user;
 	window.Error = Error;
 	window.Loader = Loader;
@@ -481,6 +570,19 @@ Number.prototype.toDouble = function () {
 
 	return (n < 10 ? "0" : "") + n.toString();
 };
+
+if (!String.prototype.format) {
+	String.prototype.format = function() {
+		var str = this.toString();
+		if (!arguments.length)
+			return str;
+		var args = typeof arguments[0],
+				args = (("string" == args || "number" == args) ? arguments : arguments[0]);
+		for (arg in args)
+			str = str.replace(RegExp("\\{" + arg + "\\}", "gi"), args[arg]);
+		return str;
+	}
+}
 
 window.countdownTimer = {
 	timers: [],
@@ -503,6 +605,8 @@ window.countdownTimer = {
 	doCallback: function (selfTimer) {
 		//var selfTimer = this.timers
 		var data = this.getTimeRemaining( selfTimer.endDate * 1000 );
+
+		data.tpl = selfTimer.tpl || "";
 
 		this.renderTimeRemaining( selfTimer.id, data );
 	},
@@ -528,12 +632,14 @@ window.countdownTimer = {
 			(data.minutes + " " + this.declOfNum(data.minutes, "minutes")) +" и " +
 			(data.seconds + " " + this.declOfNum(data.seconds, "seconds"))
 		);*/
-		return (
-				(data.days + "д.") + " " +
-				(data.hours.toDouble() + ":") +
-				(data.minutes.toDouble() + ":") +
-				(data.seconds.toDouble())
-		);
+		var tpl = data.tpl || "{days}д., {hours}:{minutes}:{seconds}";
+
+		return tpl.format({
+			days: data.days,
+			hours: data.hours.toDouble(),
+			minutes: data.minutes.toDouble(),
+			seconds: data.seconds.toDouble()
+		});
 	},
 	renderTimeRemaining: function ( id, data ) {
 		var el = document.getElementById("countdown__" + id);

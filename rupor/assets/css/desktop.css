@@ -702,6 +702,7 @@ _:-ms-input-placeholder, :root .demo-graph {
 	-webkit-border-radius: 20px;
 	-moz-border-radius: 20px;
 	border-radius: 20px;
+	margin-left: -1px;
 }
 .is-joined{
 	text-align: center;
@@ -1325,3 +1326,77 @@ dialog[open] {
 		transform: scale(1) translate(95px,97px);
 		/*animation-delay: .3s;*/
 	}
+
+
+/* Tips Styles */
+.introjs-fixParent{
+	z-index: 9999999 !important;
+}
+.introjs-overlay{
+	background: rgba(0,0,0,.7);
+}
+.introjs-tooltip{
+	padding: 15px;
+	box-shadow: none;
+	min-width: 300px;
+	max-width: 500px;
+}
+.introjs-skipbutton{
+	float: left;
+}
+.introjs-button {
+	font-size: 14px;
+	border: none;
+	box-shadow: none;
+	background: #fff;
+	font-weight: 500;
+	font-family: "Roboto";
+	text-transform: uppercase;
+	padding: 10px 15px;
+	text-shadow: none;
+	margin-top: 20px;
+	transition: background .2s;
+	}
+	.introjs-button:hover{
+		-webkit-box-shadow: none;
+		-moz-box-shadow: none;
+		box-shadow: none;
+		border: none;
+		background: #f4f4f4;
+		}
+.introjs-nextbutton{
+	color: #13a5ff;
+}
+.introjs-arrow {
+	border: 9px solid white;
+}
+.introjs-arrow.left {
+	left: -18px;
+	top: 16px;
+}
+.introjs-helperLayer,.introjs-disabled,.introjs-prevbutton{
+	display: none;
+}
+.introjs-fixParent .mdl-navigation__link,
+.introjs-fixParent .mdl-navigation__link .mdl-navigation__icon{
+	color: rgba(255, 255, 255, 0.56) !important;
+}
+
+.mdl-navigation__link.introjs-showElement,
+.mdl-navigation__link.introjs-showElement .mdl-navigation__icon{
+	color: #fff !important;
+}
+
+.fixed{
+	top:0;
+	position:fixed;
+	width:auto;
+	display:none;
+	border:none;
+}
+.user-countdown{
+	font-size: 14px;
+	display: inline-block;
+	margin-left: 10px;
+	color: rgba(0,0,0,.67);
+}
