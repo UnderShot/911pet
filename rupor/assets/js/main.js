@@ -310,16 +310,6 @@
 
 				Loader.show();
 
-				$.map( user.vkFriends.items, function (i, c) {
-					if( typeof i != "object" ){
-						return;
-					}
-
-					if( data.indexOf("http://vk.com/id" + i.id) != -1 ){
-						user.vkFriends.items.splice(c, c + 1);
-					}
-				});
-
 				$.ajax({
 					url : "/",
 					type : "POST",
@@ -338,6 +328,17 @@
 								message: e.html()
 							});
 						} else{
+
+							$.map( user.vkFriends.items, function (i, c) {
+								if( typeof i != "object" ){
+									return;
+								}
+
+								if( data.indexOf("http://vk.com/id" + i.id) != -1 ){
+									user.vkFriends.items.splice(c, c + 1);
+								}
+							});
+
 							if( typeof data == "object" ){
 								toFriends = $.map(data, function (a) {
 									return a.match(/id[\d]+/)[0];
