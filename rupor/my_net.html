@@ -75,7 +75,7 @@
 		<div class="mdl-layout__header-row">
 
 			<!-- Page Title -->
-			<span class="mdl-layout-title">Статистика</span>
+			<span class="mdl-layout-title">Моя сеть</span>
 
 			<div class="mdl-layout-spacer"></div>
 		</div>
@@ -146,7 +146,8 @@
 		<div class="page-content">
 
 
-			<div class="wrap__my-net-demo">
+			<!-- Доступ закрыт -->
+			<div class="wrap__my-net-demo" style="display: none;">
 
 
 				<div id="my-net-demo" class="wrap__circles">
@@ -185,17 +186,136 @@
 			</div>
 
 
+			<!-- Доступ открыт -->
+			<div class="wrap__my-net-release">
+
+
+				<div id="my-net-release" class="wrap__circles">
+
+					<div class="circle circle__my-net-demo-main">
+						<i class="material-icons">&#xE7FD;</i>
+						<div class="circle-avatar">
+							<img src="" data-vkid="id281199288" class="table-avatar " alt="">
+						</div>
+
+					</div>
+					<div class="circle-main-name">Павел Баранников</div>
+
+
+					<!-- Враппер для строки -->
+					<div class="circle-wrap-row">
+
+						<!-- Вертикальная линия -->
+						<div class="line--vertical"></div>
+
+
+						<div class="circle-wrap-line">
+
+							<div class="circle-wrap">
+								<div class="circle circle__my-net-demo-min">
+									<i class="material-icons">&#xE7FD;</i>
+
+									<div class="circle-avatar">
+										<img src="" data-vkid="id281199288" class="table-avatar" alt="">
+									</div>
+
+									<!-- Здесь проценты -->
+									<div class="circle-percent">
+										<i class="circle-percent-label">50%</i>
+									</div>
+
+								</div>
+
+								<!-- Ссылка на юзера ВК и имя -->
+								<a href="#" class="circle-name"><i>Артем Васильев</i></a>
+
+
+								<div class="circle-wrap-row">
+									<div class="line--vertical"></div>
+
+
+									<div class="circle-wrap-line">
+
+										<div class="circle-wrap">
+											<div class="circle circle__my-net-demo-min">
+												<i class="material-icons">&#xE7FD;</i>
+
+												<div class="circle-avatar">
+													<img src="" data-vkid="id281199288" class="table-avatar " alt="">
+												</div>
+
+												<div class="circle-percent">
+													<i class="circle-percent-label">50%</i>
+												</div>
+
+											</div>
+
+											<a href="#" class="circle-name"><i>Артем Васильев</i></a>
+										</div>
+
+
+										<div class="circle-wrap">
+											<div class="circle circle__my-net-demo-min">
+												<i class="material-icons">&#xE7FD;</i>
+												<div class="circle-avatar">
+													<img src="" data-vkid="id281199288" class="table-avatar " alt="">
+												</div>
+
+												<div class="circle-percent">
+													<i class="circle-percent-label">100%</i>
+												</div>
+											</div>
+
+											<a href="#" class="circle-name"><i>Артем Васильев</i></a>
+
+
+
+
+										</div>
+
+										<div class="circle-wrap">
+											<div class="circle circle__my-net-demo-min">
+												<i class="material-icons">&#xE7FD;</i>
+
+												<div class="circle-avatar">
+													<img src="" data-vkid="id281199288" class="table-avatar " alt="">
+												</div>
+
+												<div class="circle-percent">
+													<i class="circle-percent-label">80%</i>
+												</div>
+											</div>
+
+											<a href="#" class="circle-name"><i>Артем Васильев</i></a>
+										</div>
+									</div>
+
+								</div>
+
+
+
+							</div>
+
+
+						</div>
+
+					</div>
+
+
+				</div>
+
+
+			</div>
+
 
 
 			<script>
-				friends = ['id38079356'];
+				window.myNetList = ['id281199288','id38079356'];
 
 				jQuery(window).on("load", function () {
+					var circlesWrap = $("div.wrap__circles");
 
-					var circlesWrap = $("#my-net-demo");
-
-					circlesWrap.find("div.circle, div.circle__ripple").addClass("animated")
-
+//					circlesWrap.find("div.circle__my-net-demo-main, div.circle__ripple").addClass("animated");
 				});
 			</script>
 
@@ -205,35 +325,6 @@
 	</main>
 </div>
 
-<dialog id="newUserDialog" class="mdl-dialog">
-	<div class="mdl-dialog__title mdl-color--primary mdl-color-text--primary-contrast">Пригласить друзей</div>
-	<div class="mdl-dialog__content mdl-dialog__content--nopadding">
-
-		<div id="vkFriendsList">
-
-			<div class="mdl-dialog__content--padding-inside">
-				<div class="mdl-textfield mdl-js-textfield">
-					<input class="mdl-textfield__input search" type="text" id="vkFriendsSearch">
-					<label class="mdl-textfield__label" for="vkFriendsSearch">
-						<i class="material-icons mdl-navigation__icon">&#xE8B6;</i>
-						Введите имя
-					</label>
-				</div>
-			</div>
-
-
-			<ul id="vkFriends" class="vkFriends list">
-				<!-- friends here -->
-			</ul>
-
-		</div>
-
-	</div>
-	<div class="mdl-dialog__actions">
-		<button type="button" id="btnInviteFriends" class="mdl-button mdl-color--primary mdl-color-text--primary-contrast" disabled>Пригласить</button>
-		<button type="button" class="mdl-button dialog-close">Отмена</button>
-	</div>
-</dialog>
 
 <!-- Шаблон ошибок - вставить во все шаблоны -->
 <div aria-live="assertive" aria-atomic="true" id="mdl-snackbar" aria-relevant="text" class="mdl-snackbar mdl-js-snackbar">
@@ -257,6 +348,7 @@ window.user = {
 
 
 <script src="assets/js/material.min.js"></script>
+<script src="assets/js/intro.min.js"></script>
 <script src="assets/js/main.js"></script>
 
 <script>

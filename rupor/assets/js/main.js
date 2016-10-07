@@ -266,15 +266,22 @@
 					inviteBtn.attr("disabled", "disabled");
 				}
 			},
-			getFriendsData: function () {
-				if( window.friends ){
+			getFriendsData: function (opts) {
+				var defOpts = {
+					photoSize: "photo_50",
+					list: window.friends
+				};
 
-					var friends = window.friends,
+				opts = opts || defOpts;
+
+				if( opts.list ){
+
+					var friends = opts.list,
 							friendsIds = $.map(friends, function (a) {
 								return a.replace("id","");
 							});
 
-					var req = "https://api.vk.com/method/users.get?user_ids=" + friendsIds.join(",") + "&fields=photo_50&v=5.8";
+					var req = "https://api.vk.com/method/users.get?user_ids=" + friendsIds.join(",") + "&fields=photo_50,photo_100&v=5.8";
 
 					$.ajax({
 						url : req,
@@ -291,7 +298,7 @@
 
 								for( var i = 0, di = data.length; i < di; i++ ){
 									if( data[i].id == s.replace("id","") ){
-										$(this).attr("src", data[i].photo_50);
+										$(this).attr("src", data[i][opts.photoSize]);
 									}
 								}
 							});
@@ -347,7 +354,7 @@
 
 							window.friends = window.friends.concat(toFriends);
 
-							$("#__List").html( $msg.filter("#__List").html() );
+							$("#__List").html( $msg.find("#__List").html() );
 
 							userBehavior.getFriendsData();
 						}
@@ -554,6 +561,20 @@
 	intro.onexit(exitIntro).oncomplete(exitIntro);
 
 	if( !localStorage.getItem("checkIntro") ) intro.start();
+
+	var myNetRelease = {
+		init: function () {
+
+			userBehavior.getFriendsData({
+				photoSize: "photo_100",
+				list: window.myNetList
+			});
+		}
+	};
+
+	if( $("#my-net-release").length ){
+		myNetRelease.init();
+	}
 
 
 	window.user = user;

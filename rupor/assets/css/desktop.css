@@ -144,8 +144,11 @@ html,body{
 	box-shadow: none;
 	height: 50px;
 	text-indent: -9999px;
-	background:#36669d url(../img/btn-vk-login.png) center center no-repeat;
+	background:#36669d url(../img/vkontakte.png) center center no-repeat;
+	-webkit-background-size: cover;
+	background-size: cover;
 	width: 200px;
+	transition: opacity .3s;
 }
 .mdl-button--vk:before{
 	content: "\f189";
@@ -155,7 +158,8 @@ html,body{
 	margin-right: 8px;
 }
 .mdl-button--vk:hover{
-	background-color: #4a8dd9;
+	/*background-color: #4a8dd9;*/
+	opacity: .6;
 }
 
 .logo-text-min{
@@ -1143,7 +1147,7 @@ dialog[open] {
 #vkFriendsList{
 	position: relative;
 }
-.wrap__my-net-demo{
+.wrap__circles{
 	text-align: center;
 }
 
@@ -1199,7 +1203,7 @@ dialog[open] {
 	-moz-border-radius: 100%;
 	border-radius: 100%;
 	/*opacity: 1;*/
-	opacity: 0;
+	/*opacity: 0;*/
 	}
 .circle.animated{
 	animation: circle-animate .5s 1 cubic-bezier(1,0,0,.5);
@@ -1220,7 +1224,9 @@ dialog[open] {
 	line-height: 90px;
 	z-index: 2;
 	position: relative;
+	opacity: 0;
 	}
+
 .circle__my-net-demo-min{
 	background: #13a5ff;
 	color: rgba(255,255,255,.87);
@@ -1232,7 +1238,7 @@ dialog[open] {
 	line-height: 56px;
 	position: absolute;
 	transform: translate(0,0);
-	opacity: 0;
+	/*opacity: 0;*/
 	z-index: 1;
 	}
 	.circle__ripple{
@@ -1327,6 +1333,140 @@ dialog[open] {
 		/*animation-delay: .3s;*/
 	}
 
+.circle-avatar{
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: none;
+	-webkit-border-radius: 200px;
+	-moz-border-radius: 200px;
+	border-radius: 200px;
+	overflow: hidden;
+	}
+	.circle-avatar img{
+		width: 100%;
+		height: 100%;
+
+	}
+
+.circle__my-net-demo-min{
+	/*overflow: hidden;*/
+}
+.wrap__my-net-release .circle__my-net-demo-main{
+	opacity: 1;
+	border: 3px solid #ffc513;
+}
+
+.circle-wrap-line{
+	display: table;
+	width: 100%;
+	position: relative;
+	text-align: center;
+	margin: 0 auto 0 auto;
+	table-layout: fixed;
+}
+.circle-percent{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 2;
+	top: 0;
+	left: 0;
+	transition: background .2s;
+}
+.circle-percent-label{
+	display: inline-block;
+	font-weight: 600;
+	font-style: normal;
+	font-size: 14px;
+	text-align: center;
+	/* line-height: initial; */
+	position: relative;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.circle-wrap .circle{
+	border: 3px solid #ccc;
+	transition: border .2s;
+}
+.circle-wrap:hover .circle{
+	border-color: #00b0ff;
+}
+.circle img{
+	vertical-align: inherit;
+}
+.circle-wrap:hover .circle-percent{
+	background: rgba(0,176,255,.6);
+}
+
+.circle-name{
+	text-align: center;
+	color: rgba(0,0,0,.87);
+	font-size: 14px;
+	display: block;
+	text-decoration: none;
+	width: 50%;
+	height: 100%;
+	z-index: 3;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin-left: 25%;
+}
+.circle-name i {
+	display: block;
+	text-align: center;
+	margin-top: 67px;
+	font-style: normal;
+	padding-top: 10px;
+}
+.circle-wrap{
+	display: table-cell;
+	text-align: center;
+	position: relative;
+}
+.circle-wrap-line .circle{
+	position: relative;
+	display: inline-block;
+	left: inherit;
+	top: inherit;
+	margin-left: 0;
+	overflow: hidden;
+}
+.circle-wrap-line .circle-wrap-line{
+	width: 100%;
+}
+.circle-wrap-line .circle-wrap-line .circle{
+	width: 48px;
+	height: 48px;
+}
+.circle-wrap-line .circle-wrap-line .circle-name{
+	font-size: 12px;
+}
+.circle-wrap-row{
+	position: relative;
+}
+.line--vertical{
+	height: 50px;
+	width: 1px;
+	background: rgba(0,0,0,.2);
+	margin: 15px auto;
+}
+.circle-wrap-row .circle-wrap-row .line--vertical{
+	margin-top: 30px;
+}
+
+.circle-main-name{
+	margin-top: 15px;
+	font-weight: 600;
+	font-size: 18px;
+}
 
 /* Tips Styles */
 .introjs-fixParent{
