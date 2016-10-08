@@ -1241,6 +1241,9 @@ dialog[open] {
 	/*opacity: 0;*/
 	z-index: 1;
 	}
+#my-net-demo .circle__my-net-demo-min{
+	opacity: 0;
+}
 	.circle__ripple{
 		position: absolute;
 		width: 100%;
