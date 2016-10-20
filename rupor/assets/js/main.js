@@ -183,6 +183,7 @@
 		d[0].close();
 
 		Loader.hide();
+
 		//d.removeClass("mdl-dialog-close");
 	});
 
@@ -213,13 +214,17 @@
 			maxRenderCount: 20,
 			htmlFriendsList: '',
 			isRendered: false,
-			renderFriends: function(){
+			lastMaxScroll: 0,
+			mainRendered: "",
+			renderFriends: function( /* [0] - custom friends items */ ){
 
-				if( typeof user.vkFriends == "undefined" || !!this.isRendered ){
+				if( !arguments.length && (typeof user.vkFriends == "undefined" || !!this.isRendered) ){
 					return false;
 				}
 
-				var vkFriendsCount = user.vkFriends.items.length;
+				var items = !arguments.length ? user.vkFriends.items : arguments[0];
+
+				var vkFriendsCount = items.length;
 /*
 				if( (this.lastRendered + this.maxRenderCount) > vkFriendsCount ) this.maxRenderCount = vkFriendsCount;
 				else this.maxRenderCount = this.lastRendered + this.maxRenderCount;*/
@@ -227,7 +232,7 @@
 				//user.vkFriends.count - 1
 
 				var friends = '',
-					frItems = user.vkFriends.items;
+					frItems = items;
 
 				for(var i = 0; i < vkFriendsCount; i++ ){
 					friends += "<li class='vkFriends-list-item" + (i >= this.maxRenderCount ? " hidden" : "") + "' data-vkId='http://vk.com/id" + frItems[i].id + "'>" + "<img src='" + frItems[i].photo_50 + "' class='vkFriends-list-avatar'>" + "<span class='vkFriends-list-name name'>" + frItems[i].first_name + " " + frItems[i].last_name + "</span></li>";
@@ -239,6 +244,16 @@
 
 				return friends;
 			},
+			pasteRenderedToModal: function ( appendTo, html ) {
+				appendTo.attr("class", "vkFriends list").html( html );
+
+				this.htmlFriendsList = $("#vkFriends li");
+
+				this.lastMaxScroll = 0;
+				this.lastRendered = 0;
+
+				this.setButtonClass();
+			},
 			showHiddenFriends: function (min, max) {
 				this.htmlFriendsList.slice( min, max ).removeClass("hidden");
 			},
@@ -249,8 +264,8 @@
 
 				this.setButtonClass();
 
-				if( !this.sortList ) this.sortList = new List('vkFriendsList', options);
-				else this.sortList.reIndex();
+				/*if( !this.sortList ) this.sortList = new List('vkFriendsList', options);
+				else this.sortList.reIndex();*/
 			},
 			maxInviteForOne: 1,
 			canCheckUser: true,
@@ -306,6 +321,7 @@
 					});
 				}
 			},
+			lastListScrolled: 0,
 			doInviteFriend: function () {
 				var dialog = $("#newUserDialog");
 
@@ -313,7 +329,7 @@
 
 				userBehavior.setButtonClass();
 
-				Loader.pasteInto( $("#vkFriendsList") );
+				//Loader.pasteInto( $("#vkFriendsList") );
 
 				Loader.show();
 
@@ -359,7 +375,6 @@
 							userBehavior.getFriendsData();
 						}
 
-
 						dialog[0].close();
 
 						Loader.hide();
@@ -376,46 +391,119 @@
 
 		};
 
+		function debounce(fn, delay) {
+			var timer = null;
+			return function () {
+				var context = this, args = arguments;
+				clearTimeout(timer);
+				timer = setTimeout(function () {
+					fn.apply(context, args);
+				}, delay);
+			};
+		}
+
+		var friendsSearch = {
+
+			lastSearched: 0,
+			searchInterval: 250,
+			_keyword: "",
+
+
+			isSearched: false,
+
+			doSearch: function (keyword) {
+				if (!keyword && !this._keyword || this._keyword == keyword) return false;
+
+				if( keyword == "" ) {
+					userBehavior.pasteRenderedToModal( friendsWrap, userBehavior.mainRendered );
+					return false;
+				}
+
+				this._keyword = keyword;
+
+				this.lastSearched = +new Date();
+
+				console.log(keyword);
+
+				var token = "e116bbecdd7a7b0fcb544193609a8e0a8db93604c36ef33456d2c71addb944f58f17e0b423e5a04f8a1f4";
+
+				var req = "https://api.vk.com/method/friends.search?user_id=" + user.vkId + "&fields=photo_50&offset=0&q=" + encodeURIComponent(keyword) + "&v=5.8&access_token=" + token;
+
+				Loader.show();
+
+				// get VK users data
+				$.ajax({
+					url : req,
+					type : "GET",
+					async: true,
+					dataType : "jsonp",
+					success: function(msg){
+						//userBehavior.setProfile(msg.response[0])
+
+						Loader.hide();
+
+						userBehavior.pasteRenderedToModal(
+								friendsWrap,
+								userBehavior.renderFriends( msg.response.items )
+						);
+
+						//console.log(userBehavior.renderFriends( msg.response.items ));
+					},
+					error: function () {
+						Error.show()
+					}
+				});
+			}
+		};
+
 		var vkFriendsList = $("#vkFriendsList"),
 			scrollOffset = 300,
 			friendsWrap = $("#vkFriends"),
-			lastMaxScroll = 0;
+			insideBlockHeight = 0;
 
-		vkFriendsList.parent().on( "scroll", function(){
-			var offsetScroll = $(this).scrollTop() + $(this).height(),
-				insideBlockHeight = vkFriendsList[0].offsetHeight;
+		var vkFriendsListScroll = function() {
+			var offsetScroll = $(this).scrollTop() + $(this).height();
+
+			insideBlockHeight = vkFriendsList[0].offsetHeight;
+
+			//console.log( offsetScroll, userBehavior.lastMaxScroll, insideBlockHeight );
 
 			if(
-				offsetScroll > lastMaxScroll &&
-				offsetScroll >= insideBlockHeight - scrollOffset &&
-				offsetScroll <= insideBlockHeight
+					offsetScroll > userBehavior.lastMaxScroll &&
+					offsetScroll >= insideBlockHeight - scrollOffset &&
+					offsetScroll <= insideBlockHeight
 			) {
-				lastMaxScroll = offsetScroll + scrollOffset;
+				userBehavior.lastMaxScroll = offsetScroll + scrollOffset;
 
 				userBehavior.lastRendered += userBehavior.maxRenderCount;
 
 				userBehavior.showHiddenFriends(userBehavior.lastRendered, userBehavior.lastRendered + userBehavior.maxRenderCount);
 			}
-		});
+		};
 
-		$("body").on("keydown", "#vkFriendsSearch", function () {
-			friendsWrap.children("li").each(function () {
-				if( !$(this).hasClass("hidden") ) return;
+		$("body").on("keyup", "#vkFriendsSearch", debounce(function () {
 
-				$(this).removeClass("hidden");
-			});
-		}).on("click", "#btnInviteFriends", userBehavior.doInviteFriend);
+			var v = $.trim( this.value );
+
+			friendsSearch.doSearch( v );
+
+		}, friendsSearch.searchInterval)).on("click", "#btnInviteFriends", userBehavior.doInviteFriend);
 
 		// event to open dialog with friends
+
 		$("#addNewUser").on("click", function () {
 			user.toInvite = [];
 
 			$("#vkFriendsSearch").val("");
 
-			if( !userBehavior.isRendered ){
-				var rendered = userBehavior.renderFriends();
+			//console.log( userBehavior.lastMaxScroll );
 
-				if( !rendered ){
+			Loader.pasteInto( $("#vkFriendsList") );
+
+			if( !userBehavior.isRendered ){
+				userBehavior.mainRendered = userBehavior.renderFriends();
+
+				if( !userBehavior.mainRendered ){
 					var callee = arguments.callee;
 					setTimeout(function () {
 						callee.call();
@@ -424,23 +512,13 @@
 					return false;
 				}
 				//.html(user.id)
-				friendsWrap.attr("class", "vkFriends list").html( rendered );
 
-				userBehavior.htmlFriendsList = $("#vkFriends li");
-
-
-				setTimeout(function () {
-					userBehavior.initListJs();
-				}, 0);
-
-				$("#newUserDialog")[0].showModal();
-			} else{
-				//userBehavior.renderedFriendsDefaults();
-
-				$("#newUserDialog")[0].showModal();
+				userBehavior.pasteRenderedToModal( friendsWrap, userBehavior.mainRendered );
 			}
 
+			vkFriendsList.parent().off().on( "scroll", vkFriendsListScroll);
 
+			$("#newUserDialog")[0].showModal();
 
 		});
 
