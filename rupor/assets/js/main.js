@@ -411,8 +411,8 @@
 
 			isSearched: false,
 
-			doSearch: function (keyword) {
-				if (!keyword && !this._keyword || this._keyword == keyword) return false;
+			doSearch: function (keyword, token) {
+				if (!keyword && !this._keyword || this._keyword == keyword || !token) return false;
 
 				if( keyword == "" ) {
 					userBehavior.pasteRenderedToModal( friendsWrap, userBehavior.mainRendered );
@@ -425,7 +425,7 @@
 
 				console.log(keyword);
 
-				var token = "e116bbecdd7a7b0fcb544193609a8e0a8db93604c36ef33456d2c71addb944f58f17e0b423e5a04f8a1f4";
+				//var token = "e116bbecdd7a7b0fcb544193609a8e0a8db93604c36ef33456d2c71addb944f58f17e0b423e5a04f8a1f4";
 
 				var req = "https://api.vk.com/method/friends.search?user_id=" + user.vkId + "&fields=photo_50&offset=0&q=" + encodeURIComponent(keyword) + "&v=5.8&access_token=" + token;
 
@@ -485,7 +485,7 @@
 
 			var v = $.trim( this.value );
 
-			friendsSearch.doSearch( v );
+			friendsSearch.doSearch( v, window.vk_token );
 
 		}, friendsSearch.searchInterval)).on("click", "#btnInviteFriends", userBehavior.doInviteFriend);
 

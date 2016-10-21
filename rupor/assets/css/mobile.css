@@ -104,4 +104,7 @@
 	.circle-wrap-row .circle-wrap-row .line--vertical{
 		margin-top: 45px;
 	}
+	.bordered-textfield{
+		width: 100%;
+	}
 }

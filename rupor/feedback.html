@@ -158,46 +158,22 @@
 	<main class="mdl-layout__content mdl-color--grey-100">
 		<div class="page-content">
 
-			<div class="table-wrap table-wrap-users">
-				<table id="__List" class="dashboard-table mdl-table-middle">
-					<thead>
-						<tr class="tl_title">
-							<td class="table-col-user">Пользователь</td>
-							<td>В системе</td>
-							<td>Осталось задач</td>
-							<td>Сила связи</td>
-							<td>Кол-во людей</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="col-text-left">
-								<img src="" data-vkId="id276704097" alt="" class="table-avatar">
-								<a target="_blank" href="http://vk.com/id276704097" class="table-link-name">Мануковская Кристина</a>
 
-								<!--
-								Здесь собственно сам таймер,
-								его можно скрывать, если не нужен,
-								но и тогда надо его удалть из массива
-								 -->
-								<span id="countdown__1" class="user-countdown">...</span>
-								<a href="#" class="table-link-del"><i>&times;</i>удалить</a>
-							</td>
-							<td class="is-joined col-text-center">
-								<i class="table-icon table-icon--yes"></i>
-							</td>
-							<td class="col-text-center">2</td>
-							<td class="col-text-center">
-								<span class="relations" title="">
-									<i class="percent">50%</i>
-									<i class="scale" style="width: 50%"></i>
-								</span>
-							</td>
-							<td class="col-text-center">0</td>
-						</tr>
-					</tbody>
+			<form action="/event.php">
+				<div class="mdl-typography--title">Опишите проблему</div>
+				<div class="mdl-typography--body-1">Нашли ошибку или есть что предложить? Расскажите о об этом.</div>
 
-				</table>
+				<div class="mdl-textfield mdl-js-textfield bordered-textfield">
+					<textarea class="mdl-textfield__input" type="text" rows="5" name="newTxt" id="sample5" ></textarea>
+					<label class="mdl-textfield__label" for="sample5">Опишите это как можно детальнее</label>
+				</div>
+
+				<button class="mdl-button  mdl-js-button mdl-button--raised mdl-button--colored">
+					Отправить
+				</button>
+			</form>
+
+
 
 				<script>
 					friends = ['id276704097']

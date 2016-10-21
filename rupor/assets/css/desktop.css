@@ -1551,3 +1551,20 @@ dialog[open] {
 	width: 100%;
 	border-top: 1px solid rgba(255,255,255,.05);
 }
+
+.bordered-textfield{
+	display: block;
+	width: 450px;
+}
+.bordered-textfield textarea{
+	border: 1px solid rgba(136, 137, 139, 0.19);
+	/* padding: 10px; */
+	/* border-radius: 2px; */
+	background: #fff;
+	font-size: 14px;
+	padding: 3px 0 3px 3px;
+}
+.bordered-textfield .mdl-textfield__label{
+	left: 0px;
+	padding-left: 5px;
+}
