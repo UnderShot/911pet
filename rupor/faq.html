@@ -79,7 +79,7 @@
 		<div class="mdl-layout__header-row">
 
 			<!-- Page Title -->
-			<span class="mdl-layout-title">Пользователи</span>
+			<span class="mdl-layout-title">Помощь</span>
 
 			<div class="mdl-layout-spacer"></div>
 			<button class="mdl-button mdl-js-button mdl-color-text--primary-contrast" id="addNewUser">
@@ -127,7 +127,7 @@
 		</header>
 		<nav class="demo-navigation mdl-navigation mdl-color--sidebar">
 
-			<a class="mdl-navigation__link mdl-navigation__link--active" href="" id="nav-link__users">
+			<a class="mdl-navigation__link" href="" id="nav-link__users">
 				<i class="material-icons mdl-navigation__icon">&#xE7FD;</i>
 				Пользователи
 			</a>
@@ -147,7 +147,7 @@
 				Моя сеть
 			</a>
 
-			<a class="mdl-navigation__link" href="" id="nav-link__faq">
+			<a class="mdl-navigation__link mdl-navigation__link--active" href="" id="nav-link__faq">
 				<i class="material-icons mdl-navigation__icon">&#xE887;</i>
 				Помощь
 			</a>
@@ -171,88 +171,16 @@
 	<main class="mdl-layout__content mdl-color--grey-100">
 		<div class="page-content">
 
-			<div class="table-wrap table-wrap-users">
-				<table id="__List" class="dashboard-table mdl-table-middle">
-					<thead>
-						<tr class="tl_title">
-							<td class="table-col-user">Пользователь</td>
-							<td>В системе</td>
-							<td>Осталось задач</td>
-							<td>Сила связи</td>
-							<td>Кол-во людей</td>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="col-text-left">
-								<img src="" data-vkId="id276704097" alt="" class="table-avatar">
-								<a target="_blank" href="http://vk.com/id276704097" class="table-link-name">Мануковская Кристина</a>
 
-								<!--
-								Здесь собственно сам таймер,
-								его можно скрывать, если не нужен,
-								но и тогда надо его удалть из массива
-								 -->
-								<span id="countdown__1" class="user-countdown">...</span>
-								<a href="#" class="table-link-del"><i>&times;</i>удалить</a>
-							</td>
-							<td class="is-joined col-text-center">
-								<i class="table-icon table-icon--yes"></i>
-							</td>
-							<td class="col-text-center">2</td>
-							<td class="col-text-center">
-								<span class="relations" title="">
-									<i class="percent">50%</i>
-									<i class="scale" style="width: 50%"></i>
-								</span>
-							</td>
-							<td class="col-text-center">0</td>
-						</tr>
-					</tbody>
-
-				</table>
-
-				<script>
-					friends = ['id276704097']
-				</script>
+			<h3 class="mdl-typography--headline">Часто задаваемые вопросы</h3>
 
 
-			</div>
 
 		</div>
 
 	</main>
 </div>
 
-<dialog id="newUserDialog" class="mdl-dialog">
-	<div class="mdl-dialog__title mdl-color--primary mdl-color-text--primary-contrast">Пригласить друзей</div>
-	<div class="mdl-dialog__content mdl-dialog__content--nopadding">
-
-		<div id="vkFriendsList">
-
-			<div class="mdl-dialog__content--padding-inside">
-				<div class="mdl-textfield mdl-js-textfield">
-					<input class="mdl-textfield__input search" type="text" id="vkFriendsSearch">
-					<label class="mdl-textfield__label" for="vkFriendsSearch">
-						<i class="material-icons mdl-navigation__icon">&#xE8B6;</i>
-						Введите имя
-					</label>
-				</div>
-			</div>
-
-
-			<ul id="vkFriends" class="vkFriends list">
-				<!-- friends here -->
-			</ul>
-
-		</div>
-
-	</div>
-	<div class="mdl-dialog__actions">
-		<button type="button" id="btnInviteFriends" class="mdl-button mdl-color--primary mdl-color-text--primary-contrast" disabled>Пригласить</button>
-		<button type="button" class="mdl-button dialog-close">Отмена</button>
-	</div>
-</dialog>
 
 
 <!-- Шаблон ошибок - вставить во все шаблоны -->
@@ -295,14 +223,10 @@ window.user = {
 			// id of the task
 			id: 1,
 			// end in sec
-			endDate: (new Date().getTime() / 1000)+(10),
+			endDate: 1479927000,
 
 			// custom template
-			tpl: "Осталось: {hours}:{minutes}:{seconds}",
-
-			elapsedTime: function(timer){
-				this._renderText(timer.id, "Конец");
-			}
+			tpl: "Осталось: {hours}:{minutes}:{seconds}"
 		}
 	];
 

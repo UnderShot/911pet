@@ -412,6 +412,7 @@
 			isSearched: false,
 
 			doSearch: function (keyword, token) {
+
 				if (!keyword && !this._keyword || this._keyword == keyword || !token) return false;
 
 				if( keyword == "" ) {
@@ -419,15 +420,17 @@
 					return false;
 				}
 
+
+
 				this._keyword = keyword;
 
 				this.lastSearched = +new Date();
 
-				console.log(keyword);
-
 				//var token = "e116bbecdd7a7b0fcb544193609a8e0a8db93604c36ef33456d2c71addb944f58f17e0b423e5a04f8a1f4";
 
-				var req = "https://api.vk.com/method/friends.search?user_id=" + user.vkId + "&fields=photo_50&offset=0&q=" + encodeURIComponent(keyword) + "&v=5.8&access_token=" + token;
+
+
+				var req = "https://api.vk.com/method/friends.search?user_id=" + user.vkId + "&fields=photo_50&offset=0&q=" + encodeURIComponent(keyword) + "&v=5.6&access_token=" + token;
 
 				Loader.show();
 
@@ -440,12 +443,19 @@
 					success: function(msg){
 						//userBehavior.setProfile(msg.response[0])
 
-						Loader.hide();
-
-						userBehavior.pasteRenderedToModal(
+						try{
+							Loader.hide();
+							userBehavior.pasteRenderedToModal(
 								friendsWrap,
 								userBehavior.renderFriends( msg.response.items )
-						);
+							);
+						} catch(e){
+							console.log(msg)
+
+							Error.show({message: "Ошибка при поиске"});
+						}
+
+						
 
 						//console.log(userBehavior.renderFriends( msg.response.items ));
 					},
@@ -654,10 +664,38 @@
 		myNetRelease.init();
 	}
 
+	var checkVkWall = function () {
+		var req = "https://api.vk.com/method/wall.get?owner_id=" + user.vkId + "&v=5.8";
+
+		Loader.pasteDefault();
+		Loader.show();
+
+		// get VK user friends
+		$.ajax({
+			url : req,
+			type : "GET",
+			async: true,
+			dataType : "jsonp",
+			success: function(msg){
+
+				if( msg.error ){
+					$("#vkWallError")[0].showModal();
+
+					$("div.task-btns-wrap button.mdl-button_rang").attr("disabled", "disabled");
+				}
+				Loader.hide();
+
+				//userBehavior.setFriends(msg.response)
+			}
+		});
+	};
+
 
 	window.user = user;
 	window.Error = Error;
 	window.Loader = Loader;
+
+	window.checkVkWall = checkVkWall;
 
 }(jQuery, window));
 
@@ -702,11 +740,26 @@ window.countdownTimer = {
 		}
 
 	},
+	_elapsedCallback: function (timer) {
+		if( !timer.elapsedTime ) return;
+
+		if( typeof timer.elapsedTime == "string" )
+			return this._renderText(timer.id, timer.elapsedTime || "");
+
+		else if( typeof timer.elapsedTime == "function" )
+			return timer.elapsedTime.call(this, timer);
+	},
 	doCallback: function (selfTimer) {
 		//var selfTimer = this.timers
 		var data = this.getTimeRemaining( selfTimer.endDate * 1000 );
 
 		data.tpl = selfTimer.tpl || "";
+
+		if( data.total < 0 ) {
+			this._elapsedCallback(selfTimer);
+
+			return clearInterval(selfTimer.timer);
+		}
 
 		this.renderTimeRemaining( selfTimer.id, data );
 	},
@@ -714,6 +767,7 @@ window.countdownTimer = {
 		var self = this;
 
 		self.doCallback(selfTimer);
+
 
 		return setInterval(function () {
 			self.doCallback(selfTimer);
@@ -742,11 +796,18 @@ window.countdownTimer = {
 		});
 	},
 	renderTimeRemaining: function ( id, data ) {
+
+		this._renderText(id, this.renderTemplate( data ));
+
+	},
+	_renderText: function (id, text) {
 		var el = document.getElementById("countdown__" + id);
 
-		if( el == null ) return false;
+		if( el == null ) {
+			throw new Error("Not found Countdown Element.")
+		}
 
-		el.innerHTML = this.renderTemplate( data );
+		el.innerHTML = text;
 	},
 	getTimeRemaining: function(endtime) {
 		var t = endtime - new Date().getTime();

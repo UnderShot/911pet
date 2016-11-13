@@ -383,33 +383,15 @@
 	</main>
 </div>
 
-<dialog id="newUserDialog" class="mdl-dialog">
-	<div class="mdl-dialog__title mdl-color--primary mdl-color-text--primary-contrast">Пригласить друзей</div>
-	<div class="mdl-dialog__content mdl-dialog__content--nopadding">
+<dialog id="vkWallError" class="mdl-dialog">
+	<div class="mdl-dialog__title mdl-color--red-300 mdl-color-text--primary-contrast">Ошибка доступа</div>
+	<div class="mdl-dialog__content">
 
-		<div id="vkFriendsList">
-
-			<div class="mdl-dialog__content--padding-inside">
-				<div class="mdl-textfield mdl-js-textfield">
-					<input class="mdl-textfield__input search" type="text" id="vkFriendsSearch">
-					<label class="mdl-textfield__label" for="vkFriendsSearch">
-						<i class="material-icons mdl-navigation__icon">&#xE8B6;</i>
-						Введите имя
-					</label>
-				</div>
-			</div>
-
-
-			<ul id="vkFriends" class="vkFriends list">
-				<!-- friends here -->
-			</ul>
-
-		</div>
+		Откройте доступ к вашей стене Вконтакте для выполнения заданий и обновите страницу.
 
 	</div>
 	<div class="mdl-dialog__actions">
-		<button type="button" id="btnInviteFriends" class="mdl-button mdl-color--primary mdl-color-text--primary-contrast" disabled>Пригласить</button>
-		<button type="button" class="mdl-button dialog-close">Отмена</button>
+		<button type="button" class="mdl-button dialog-close">Хорошо</button>
 	</div>
 </dialog>
 
@@ -427,7 +409,7 @@
 <script>
 window.user = {
 	id: 17,
-	vkId: 281199288
+	vkId: 22500726
 };
 </script>
 
@@ -456,6 +438,8 @@ window.user = {
 	];
 
 	CT.init();
+
+	checkVkWall();
 </script>
 
 <script>
