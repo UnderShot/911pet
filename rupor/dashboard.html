@@ -194,7 +194,7 @@
 								но и тогда надо его удалть из массива
 								 -->
 								<span id="countdown__1" class="user-countdown">...</span>
-								<a href="#" class="table-link-del"><i>&times;</i>удалить</a>
+								<a href="#delete=123" class="table-link-del"><i>&times;</i>удалить</a>
 							</td>
 							<td class="is-joined col-text-center">
 								<i class="table-icon table-icon--yes"></i>
@@ -250,6 +250,19 @@
 	</div>
 	<div class="mdl-dialog__actions">
 		<button type="button" id="btnInviteFriends" class="mdl-button mdl-color--primary mdl-color-text--primary-contrast" disabled>Пригласить</button>
+		<button type="button" class="mdl-button dialog-close">Отмена</button>
+	</div>
+</dialog>
+
+<dialog id="confirmUserDelete" class="mdl-dialog">
+	<div class="mdl-dialog__title mdl-color--primary mdl-color-text--primary-contrast">Подтвердите действие</div>
+	<div class="mdl-dialog__content">
+
+		Вы действительно хотите удалить этого пользователя?
+
+	</div>
+	<div class="mdl-dialog__actions">
+		<button type="button" id="btnConfirmUserDelete" class="mdl-button mdl-color--red-400 mdl-color-text--primary-contrast">Удалить</button>
 		<button type="button" class="mdl-button dialog-close">Отмена</button>
 	</div>
 </dialog>

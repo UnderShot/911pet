@@ -254,6 +254,28 @@
 
 				this.setButtonClass();
 			},
+			_checkTasksStatusTimer: null,
+			_checkTasksStatusInterval: 10 * (60 * 1000),
+			checkTasksStatus: function () {
+
+				this._checkTasksStatusTimer = setInterval(function () {
+
+					$.ajax({
+						url: location.href,
+						success: function (d) {
+							var $msg = $(d);
+
+
+							$("#__List").html( $msg.filter("#__List").html() );
+
+							//__List	$()
+						}
+					});
+
+				}, this._checkTasksStatusInterval);
+
+
+			},
 			showHiddenFriends: function (min, max) {
 				this.htmlFriendsList.slice( min, max ).removeClass("hidden");
 			},
@@ -450,8 +472,6 @@
 								userBehavior.renderFriends( msg.response.items )
 							);
 						} catch(e){
-							console.log(msg)
-
 							Error.show({message: "Ошибка при поиске"});
 						}
 
@@ -595,6 +615,9 @@
 
 			return false;
 		});
+
+
+		if( $("button.mdl-button_rang").length ) userBehavior.checkTasksStatus();
 	}
 
 
@@ -689,6 +712,32 @@
 			}
 		});
 	};
+
+	var delLink = null,
+		delModal = $("#confirmUserDelete");
+	$("a.table-link-del").on("click", function (e) {
+		e.preventDefault();
+
+		var m = delModal;
+
+		if( !m.length ) return;
+
+		m[0].showModal();
+
+		delLink = this.href;
+
+		return;
+	});
+
+	$("body").on("click", "#btnConfirmUserDelete", function () {
+		delModal[0].close();
+
+		location.href = delLink;
+
+		return;
+	});
+
+
 
 
 	window.user = user;
