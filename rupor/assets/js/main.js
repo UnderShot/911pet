@@ -715,7 +715,7 @@
 
 	var delLink = null,
 		delModal = $("#confirmUserDelete");
-	$("a.table-link-del").on("click", function (e) {
+	$("body").on("click", "a.table-link-del", function (e) {
 		e.preventDefault();
 
 		var m = delModal;
